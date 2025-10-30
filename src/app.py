@@ -7,18 +7,16 @@ from flask import Flask, render_template, abort, request
 
 app = Flask(__name__)
 
-meme = MemeEngine("./static")
+meme = MemeEngine('./static')
 
 
 def setup():
-    """Load all resources"""
+    """ Load all resources """
 
-    quote_files = [
-        "./_data/DogQuotes/DogQuotesTXT.txt",
-        "./_data/DogQuotes/DogQuotesDOCX.docx",
-        "./_data/DogQuotes/DogQuotesPDF.pdf",
-        "./_data/DogQuotes/DogQuotesCSV.csv",
-    ]
+    quote_files = ['./_data/DogQuotes/DogQuotesTXT.txt',
+                   './_data/DogQuotes/DogQuotesDOCX.docx',
+                   './_data/DogQuotes/DogQuotesPDF.pdf',
+                   './_data/DogQuotes/DogQuotesCSV.csv']
 
     # TODO: Use the Ingestor class to parse all files in the
     # quote_files variable
@@ -36,9 +34,9 @@ def setup():
 quotes, imgs = setup()
 
 
-@app.route("/")
+@app.route('/')
 def meme_rand():
-    """Generate a random meme"""
+    """ Generate a random meme """
 
     # @TODO:
     # Use the random python standard library class to:
@@ -48,18 +46,18 @@ def meme_rand():
     img = None
     quote = None
     path = meme.make_meme(img, quote.body, quote.author)
-    return render_template("meme.html", path=path)
+    return render_template('meme.html', path=path)
 
 
-@app.route("/create", methods=["GET"])
+@app.route('/create', methods=['GET'])
 def meme_form():
-    """User input for meme information"""
-    return render_template("meme_form.html")
+    """ User input for meme information """
+    return render_template('meme_form.html')
 
 
-@app.route("/create", methods=["POST"])
+@app.route('/create', methods=['POST'])
 def meme_post():
-    """Create a user defined meme"""
+    """ Create a user defined meme """
 
     # @TODO:
     # 1. Use requests to save the image from the image_url
@@ -70,7 +68,7 @@ def meme_post():
 
     path = None
 
-    return render_template("meme.html", path=path)
+    return render_template('meme.html', path=path)
 
 
 if __name__ == "__main__":
