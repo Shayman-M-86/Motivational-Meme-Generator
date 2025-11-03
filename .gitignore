@@ -56,3 +56,6 @@ cover/
 
 # python version
 .python-version
+
+# xpdf-tools
+.xpdf-tools/

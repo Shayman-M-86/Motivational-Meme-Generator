@@ -7,5 +7,6 @@ requires-python = ">=3.13"
 dependencies = [
     "flask>=3.1.2",
     "numpy>=2.3.3",
-    "pandas>=2.0.3"
+    "pandas>=2.0.3",
+    "python-docx>=1.2.0",
 ]
