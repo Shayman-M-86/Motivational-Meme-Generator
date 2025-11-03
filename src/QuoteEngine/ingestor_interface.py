@@ -174,6 +174,10 @@ if __name__ == "__main__":
     # Simple test cases to verify the functionality of IngestorInterface and TextIngestor
     test_path = Path("./src/_data/DogQuotes/DogQuotesTXT.txt")
 
-    quotes: list[Quote] = PdfIngestor.ingest(test_path)
+    quotes: list[Quote] = TxtIngestor.ingest(test_path)
     for quote in quotes:
         print(quote)
+    # test_path.absolute()
+    # print(f"Testing file read for: {test_path.absolute()}")
+    # with open(test_path, "rb") as f:
+    #     print(f.read(900))
