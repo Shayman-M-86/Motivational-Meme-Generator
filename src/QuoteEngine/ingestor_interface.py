@@ -1,12 +1,12 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from quote_model import Quote
 from pathlib import Path
 import pandas as pd
 from docx import Document
 import subprocess
 import re
 
+from .quote_model import Quote
 
 class IngestorException(Exception):
     """Custom exception for Ingestor errors."""
@@ -61,7 +61,11 @@ class IngestorInterface(ABC):
         return Quote(body.strip(), author.strip())
 
 
-class TextIngestor(IngestorInterface):
+
+# ---------- Ingestors for different file types
+
+
+class TxtIngestor(IngestorInterface):
     """Ingestor for text files."""
 
     extension: str = ".txt"
@@ -84,7 +88,7 @@ class TextIngestor(IngestorInterface):
         return quotes
 
 
-class CSVIngestor(IngestorInterface):
+class CsvIngestor(IngestorInterface):
     """Ingestor for CSV files."""
 
     extension: str = ".csv"
@@ -130,7 +134,7 @@ class DocxIngestor(IngestorInterface):
         return quotes
 
 
-class PDFIngestor(IngestorInterface):
+class PdfIngestor(IngestorInterface):
     """Ingestor for PDF files."""
 
     extension: str = ".pdf"
@@ -156,7 +160,7 @@ class PDFIngestor(IngestorInterface):
             lines: list[str] = re.findall(r'"[^"]+" - [^"]+', text_content)
 
             for raw_line in lines:
-                quote = cls._parse_quote_line(raw_line)
+                quote: Quote | None = cls._parse_quote_line(raw_line)
                 if quote:
                     quotes.append(quote)
 
@@ -170,6 +174,6 @@ if __name__ == "__main__":
     # Simple test cases to verify the functionality of IngestorInterface and TextIngestor
     test_path = Path("./src/_data/DogQuotes/DogQuotesTXT.txt")
 
-    quotes: list[Quote] = PDFIngestor.ingest(test_path)
+    quotes: list[Quote] = PdfIngestor.ingest(test_path)
     for quote in quotes:
         print(quote)

@@ -1,8 +1,10 @@
 import os
 import random
+from pathlib import Path
 
 # @TODO Import your Ingestor and MemeEngine classes
-
+from QuoteEngine import Ingestor, Quote
+from MemeEngine import MemeEngine
 
 def generate_meme(path=None, body=None, author=None):
     """ Generate a meme given an path and a quote """
@@ -26,13 +28,13 @@ def generate_meme(path=None, body=None, author=None):
                        './_data/DogQuotes/DogQuotesCSV.csv']
         quotes = []
         for f in quote_files:
-            quotes.extend(Ingestor.parse(f))
+            quotes.extend(Ingestor.ingest(Path(f)))
 
         quote = random.choice(quotes)
     else:
         if author is None:
             raise Exception('Author Required if Body is Used')
-        quote = QuoteModel(body, author)
+        quote = Quote(body, author)
 
     meme = MemeEngine('./tmp')
     path = meme.make_meme(img, quote.body, quote.author)
@@ -44,5 +46,4 @@ if __name__ == "__main__":
     # path - path to an image file
     # body - quote body to add to the image
     # author - quote author to add to the image
-    args = None
-    print(generate_meme(args.path, args.body, args.author))
+    print(generate_meme())
