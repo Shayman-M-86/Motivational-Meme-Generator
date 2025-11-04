@@ -6,7 +6,9 @@ from pathlib import Path
 
 
 # @TODO Import your Ingestor and MemeEngine classes
-from QuoteEngine import Ingestor, Quote
+from QuoteEngine import Ingestor, Quote 
+from MemeEngine import MemeEngine
+
 
 
 app = Flask(__name__)
@@ -31,9 +33,9 @@ def setup():
     images_path = "./_data/photos/dog/"
 
     # TODO: Use the pythons standard library os class to find all
-    # images within the images images_path directory
-    
-    imgs = None
+    # images within the images images_path directory 
+
+    imgs = 
 
     return quotes, imgs
 
