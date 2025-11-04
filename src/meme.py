@@ -2,6 +2,8 @@
 import os
 import random
 from pathlib import Path
+import argparse
+import sys
 
 # @TODO Import your Ingestor and MemeEngine classes
 from QuoteEngine import Ingestor, Quote
@@ -53,15 +55,37 @@ class MemeGenerator:
             quote: Quote = Quote(body_author[0], body_author[1])
 
         meme = MemeEngine('./src/.tmp')
+        
         path = meme.make_meme(img, quote.body, quote.author, 500)
         return path
 
 
 if __name__ == "__main__":
-    # @TODO Use ArgumentParser to parse the following CLI arguments
-    # path - path to an image file
-    # body - quote body to add to the image
-    # author - quote author to add to the image
-    meme_gen = MemeGenerator()
-    for i in range(10):
-        meme_gen.generate_meme()
+    parser = argparse.ArgumentParser(description="Generate a meme")
+    parser.add_argument("-p", "--path", help="Path to an image file")
+    parser.add_argument("-b", "--body", help="Quote body text")
+    parser.add_argument("-a", "--author", help="Quote author")
+    args = parser.parse_args()
+
+    if (args.body and not args.author) or (args.author and not args.body):
+        print("Error: --body and --author must be provided together.", file=sys.stderr)
+        sys.exit(2)
+
+    if args.path and not os.path.isfile(args.path):
+        print(f"Error: Image path not found: {args.path}", file=sys.stderr)
+        sys.exit(2)
+
+    if args.path or args.body or args.author:
+        mg = MemeGenerator()
+        body_author = (args.body, args.author) if args.body and args.author else None
+        path_arg = (args.path,) if args.path else None
+        try:
+            result = mg.generate_meme(path=path_arg, body_author=body_author)
+            print(result)
+            sys.exit(0)
+        except Exception as e:
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(1)
+    # meme_gen = MemeGenerator()
+    # for i in range(10):
+    #     print(meme_gen.generate_meme()) 
