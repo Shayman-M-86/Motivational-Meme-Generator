@@ -8,6 +8,7 @@ from pathlib import Path
 # @TODO Import your Ingestor and MemeEngine classes
 from QuoteEngine import Ingestor, Quote 
 from MemeEngine import MemeEngine
+from meme import MemeGenerator
 
 
 
@@ -19,10 +20,12 @@ meme = MemeEngine('./static')
 def setup():
     """ Load all resources """
 
-    quote_files = ['./_data/DogQuotes/DogQuotesTXT.txt',
-                   './_data/DogQuotes/DogQuotesDOCX.docx',
-                   './_data/DogQuotes/DogQuotesPDF.pdf',
-                   './_data/DogQuotes/DogQuotesCSV.csv']
+    quote_files = [
+        "./src/_data/DogQuotes/DogQuotesTXT.txt",
+        "./src/_data/DogQuotes/DogQuotesDOCX.docx",
+        "./src/_data/DogQuotes/DogQuotesPDF.pdf",
+        "./src/_data/DogQuotes/DogQuotesCSV.csv",
+    ]
 
     # TODO: Use the Ingestor class to parse all files in the
     # quote_files variable
@@ -30,12 +33,14 @@ def setup():
     for f in quote_files:
         quotes.extend(Ingestor.ingest(Path(f)))
 
-    images_path = "./_data/photos/dog/"
+    images_path = "./src/_data/photos/dog/"
 
     # TODO: Use the pythons standard library os class to find all
     # images within the images images_path directory 
 
-    imgs = 
+    imgs = []
+    for root, dirs, files in os.walk(images_path):
+        imgs.extend([os.path.join(root, name) for name in files])
 
     return quotes, imgs
 
@@ -54,7 +59,7 @@ def meme_rand():
 
     img = random.choice(imgs)
     quote = random.choice(quotes)
-    path = meme.make_meme(img, quote.body, quote.author)
+    path = meme.make_meme(img, quote.body, quote.author, 500)
     return render_template('meme.html', path=path)
 
 

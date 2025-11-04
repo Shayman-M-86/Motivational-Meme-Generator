@@ -8,12 +8,14 @@ ImageType = Image.Image
 
 class MemeEngine:
     def __init__(self, output_dir: str):
+        """Initialize MemeEngine with the output directory."""
         self.output_dir = output_dir
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
 
     @staticmethod
     def scale_image(img: ImageType, width: int) -> ImageType:
+        """Resize image to the specified width while maintaining aspect ratio."""
         ratio = width / float(img.width)
         height = int(ratio * float(img.height))
         return img.resize((width, height))
