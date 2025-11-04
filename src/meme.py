@@ -12,7 +12,7 @@ class MemeGenerator:
     def __init__(self):
         self.quotes = set()
 
-    def choice_imgs(self, images_path):
+    def choice_imgs(self, images_path) -> str:
         """ Choose a random image from the given directory """
         imgs = []
         for root, dirs, files in os.walk(images_path):
@@ -20,8 +20,8 @@ class MemeGenerator:
 
         img = random.choice(imgs)
         return img
-    
-    def load_quotes(self):
+
+    def load_quotes(self) -> set[Quote]:
         """ Load all quotes from the various file types """
         quote_files = ['./src/_data/DogQuotes/DogQuotesTXT.txt',
                        './src/_data/DogQuotes/DogQuotesDOCX.docx',
@@ -63,5 +63,5 @@ if __name__ == "__main__":
     # body - quote body to add to the image
     # author - quote author to add to the image
     meme_gen = MemeGenerator()
-    for i in range(2):
+    for i in range(10):
         meme_gen.generate_meme()
