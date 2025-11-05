@@ -10,8 +10,12 @@ import requests
 from flask import Flask, abort, render_template, request, url_for
 from PIL import Image
 
-from MemeEngine import MemeEngine
-from QuoteEngine import Ingestor, Quote
+try:  # pragma: no cover - support both package and script execution contexts
+    from .MemeEngine import MemeEngine
+    from .QuoteEngine import Ingestor, Quote
+except ImportError:  # pragma: no cover
+    from MemeEngine import MemeEngine  # type: ignore
+    from QuoteEngine import Ingestor, Quote  # type: ignore
 
 
 app = Flask(__name__)
@@ -153,7 +157,12 @@ def meme_post():
         author,
     )
 
-    response = requests.get(verified_url, timeout=4)
+    try:
+        response = requests.get(verified_url, timeout=4)
+        response.raise_for_status()
+    except requests.exceptions.RequestException as exc:
+        abort(400, description=f"Unable to download image: {exc}")
+
     image_verification(response)
 
     temp_image_path = Path(f"src/.tmp/temp_image_{random.randint(0, 10000)}")

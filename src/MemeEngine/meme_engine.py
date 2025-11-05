@@ -1,12 +1,16 @@
-from PIL import Image, ImageDraw, ImageFont
+"""Utilities for rendering memes with dynamically scaled text overlays."""
+
 import random
 from pathlib import Path
 
+from PIL import Image, ImageDraw, ImageFont
 
 ImageType = Image.Image
 
 
 class MemeEngine:
+    """Create captioned images using Pillow."""
+
     def __init__(self, output_dir: str | None = None):
         """Initialize MemeEngine with the output directory."""
         if output_dir is None:
@@ -21,7 +25,7 @@ class MemeEngine:
         ratio = width / float(img.width)
         height = int(ratio * float(img.height))
         return img.resize((width, height))
-    
+
     @staticmethod
     def text_scale(
         draw: ImageDraw.ImageDraw,
@@ -37,7 +41,6 @@ class MemeEngine:
 
         lo, hi = 20, max(33, img_width // 13)
         best_font = ImageFont.truetype(font_path, size=lo)
-        i = 0
         while lo <= hi:
             mid = (lo + hi) // 2
             font = ImageFont.truetype(font_path, size=mid)
@@ -47,37 +50,57 @@ class MemeEngine:
 
             # Check both width and height constraints
             if text_w <= target_width and text_h <= max_height:
-                best_font = font   # fits; try bigger
+                best_font = font  # fits; try bigger
                 lo = mid + 1
             else:
-                hi = mid - 1       # too big; shrink
-            i += 1
+                hi = mid - 1  # too big; shrink
         return best_font
 
+    def make_meme(self, img_path: str, quote: str, author: str, width: int = 500) -> str:
+        """Create a meme with the given image and quote.
 
-    def make_meme(self, img_path: str, quote: str, author: str, width: int) -> str:
-        """Create a meme with the given image and quote."""
+        Args:
+            img_path (str): Source image path.
+            quote (str): Body text to render.
+            author (str): Author attribution.
+            width (int, optional): Target width for the output image. Defaults to 500.
+
+        Returns:
+            str: Filename of the generated meme relative to the output directory.
+        """
         with Image.open(img_path) as img:
             img = MemeEngine.scale_image(img, width)
             draw = ImageDraw.Draw(img)
 
             text = f"{quote}\n- {author}"
-            x = (img.width / 2)
-            y = (img.height / 2)
-            font = MemeEngine.text_scale(draw, text, "arial.ttf", img.width , img.height)
+            x = img.width / 2
+            y = img.height / 2
+            font = MemeEngine.text_scale(draw, text, "arial.ttf", img.width, img.height)
 
             draw.multiline_text(
-                (x + 2, y + 2), text, font=font, fill="black", align="center", spacing=5, anchor="ma"
+                (x + 2, y + 2),
+                text,
+                font=font,
+                fill="black",
+                align="center",
+                spacing=5,
+                anchor="ma",
             )
             draw.multiline_text(
-                (x, y), text, font=font, fill="white", align="center", spacing=5, anchor="ma"
+                (x, y),
+                text,
+                font=font,
+                fill="white",
+                align="center",
+                spacing=5,
+                anchor="ma",
             )
-            file_name: str = f"temp_meme_{random.randint(1, 1000000)}.jpg"
-            output_path: Path = Path(self.output_dir) / file_name
+            file_name: str = f"temp_meme_{random.randint(1, 1_000_000)}.jpg"
+            output_path: Path = self.output_dir / file_name
             img.save(output_path)
             return file_name
 
-    
+
 if __name__ == "__main__":
     meme = MemeEngine("./src/.tmp")
     print(

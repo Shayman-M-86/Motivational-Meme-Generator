@@ -6,8 +6,12 @@ import random
 import sys
 from pathlib import Path
 
-from MemeEngine import MemeEngine
-from QuoteEngine import Ingestor, Quote
+try:  # pragma: no cover - enable execution both as module and script
+    from .MemeEngine import MemeEngine
+    from .QuoteEngine import Ingestor, Quote
+except ImportError:  # pragma: no cover
+    from MemeEngine import MemeEngine  # type: ignore
+    from QuoteEngine import Ingestor, Quote  # type: ignore
 
 
 class MemeGenerator:
@@ -21,7 +25,7 @@ class MemeGenerator:
         """Choose a random image from the provided directory tree."""
         images: list[str] = []
         for root, _, files in os.walk(images_path):
-            images = [os.path.join(root, name) for name in files]
+            images.extend(os.path.join(root, name) for name in files)
 
         return random.choice(images)
 
