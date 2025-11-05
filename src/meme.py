@@ -1,43 +1,47 @@
+"""Command-line utilities for generating motivational memes."""
 
+import argparse
 import os
 import random
-from pathlib import Path
-import argparse
 import sys
+from pathlib import Path
 
-# @TODO Import your Ingestor and MemeEngine classes
-from QuoteEngine import Ingestor, Quote
 from MemeEngine import MemeEngine
+from QuoteEngine import Ingestor, Quote
+
 
 class MemeGenerator:
+    """Generate memes from random or user-supplied inputs."""
 
-    def __init__(self):
-        self.quotes = set()
+    def __init__(self) -> None:
+        self.quotes: set[Quote] = set()
 
-    def choice_imgs(self, images_path) -> str:
-        """ Choose a random image from the given directory """
-        imgs = []
-        for root, dirs, files in os.walk(images_path):
-            imgs = [os.path.join(root, name) for name in files]
+    # Helper utilities ---------------------------------------------------------
+    def choice_imgs(self, images_path: str) -> str:
+        """Choose a random image from the provided directory tree."""
+        images: list[str] = []
+        for root, _, files in os.walk(images_path):
+            images = [os.path.join(root, name) for name in files]
 
-        img = random.choice(imgs)
-        return img
+        return random.choice(images)
 
     def load_quotes(self) -> set[Quote]:
-        """ Load all quotes from the various file types """
-        quote_files = ['./src/_data/DogQuotes/DogQuotesTXT.txt',
-                       './src/_data/DogQuotes/DogQuotesDOCX.docx',
-                       './src/_data/DogQuotes/DogQuotesPDF.pdf',
-                       './src/_data/DogQuotes/DogQuotesCSV.csv']
-        for f in quote_files:
-            q = Ingestor.ingest(Path(f))
-            self.quotes.update(q)
+        """Load all quotes from the various supported file types."""
+        quote_files = [
+            "./src/_data/DogQuotes/DogQuotesTXT.txt",
+            "./src/_data/DogQuotes/DogQuotesDOCX.docx",
+            "./src/_data/DogQuotes/DogQuotesPDF.pdf",
+            "./src/_data/DogQuotes/DogQuotesCSV.csv",
+        ]
+        for file_path in quote_files:
+            ingested_quotes = Ingestor.ingest(Path(file_path))
+            self.quotes.update(ingested_quotes)
         return self.quotes
 
-    def generate_meme(self, path=None, body_author: tuple[str, str] | None = None):
-        """ Generate a meme given an path and a quote """
-        img = None
-
+    def generate_meme(
+        self, path: tuple[str, ...] | None = None, body_author: tuple[str, str] | None = None
+    ) -> str:
+        """Generate a meme from a random or provided image and quote data."""
         if path is None:
             images_path = "./src/_data/photos/dog/"
             img = self.choice_imgs(images_path)
@@ -50,16 +54,16 @@ class MemeGenerator:
 
         if body_author and (not isinstance(body_author, tuple) or len(body_author) != 2):
             raise ValueError("body_author must be a tuple of (body, author) or None")
-        
+
         if body_author:
-            quote: Quote = Quote(body_author[0], body_author[1])
+            quote = Quote(body_author[0], body_author[1])
 
-        meme = MemeEngine('./src/.tmp')
-        
-        path = meme.make_meme(img, quote.body, quote.author, 500)
-        return path
+        meme_engine = MemeEngine("./src/.tmp")
+        meme_path = meme_engine.make_meme(img, quote.body, quote.author, 500)
+        return meme_path
 
 
+# CLI entry point ---------------------------------------------------------------
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate a meme")
     parser.add_argument("-p", "--path", help="Path to an image file")
@@ -76,16 +80,17 @@ if __name__ == "__main__":
         sys.exit(2)
 
     if args.path or args.body or args.author:
-        mg = MemeGenerator()
+        meme_generator = MemeGenerator()
         body_author = (args.body, args.author) if args.body and args.author else None
         path_arg = (args.path,) if args.path else None
         try:
-            result = mg.generate_meme(path=path_arg, body_author=body_author)
+            result = meme_generator.generate_meme(path=path_arg, body_author=body_author)
             print(result)
             sys.exit(0)
-        except Exception as e:
-            print(f"Error: {e}", file=sys.stderr)
+        except Exception as exc:  # noqa: BLE001 - surface as CLI error
+            print(f"Error: {exc}", file=sys.stderr)
             sys.exit(1)
+
     meme_gen = MemeGenerator()
-    for i in range(5):
-        print(meme_gen.generate_meme()) 
+    for _ in range(5):
+        print(meme_gen.generate_meme())

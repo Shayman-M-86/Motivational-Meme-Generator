@@ -1,5 +1,4 @@
 from PIL import Image, ImageDraw, ImageFont
-import os
 import random
 from pathlib import Path
 
