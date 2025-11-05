@@ -78,4 +78,4 @@ Omit any flag to let the tool pick a random fallback. The script prints the path
 
 ## License
 
-MIT © Your Name. Replace this section if you ship under a different license.
+MIT © Shayman-M.
