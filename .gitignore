@@ -71,3 +71,4 @@ tmp*
 .*temp*
 *temp*
 
+setup_project.py
