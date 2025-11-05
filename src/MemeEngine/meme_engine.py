@@ -1,17 +1,20 @@
 from PIL import Image, ImageDraw, ImageFont
 import os
 import random
+from pathlib import Path
 
 
 ImageType = Image.Image
 
 
 class MemeEngine:
-    def __init__(self, output_dir: str):
+    def __init__(self, output_dir: str | None = None):
         """Initialize MemeEngine with the output directory."""
-        self.output_dir = output_dir
-        if not os.path.exists(output_dir):
-            os.makedirs(output_dir)
+        if output_dir is None:
+            raise ValueError("output_dir must be provided")
+        self.output_dir: Path = Path(output_dir)
+        if not self.output_dir.exists():
+            self.output_dir.mkdir(parents=True)
 
     @staticmethod
     def scale_image(img: ImageType, width: int) -> ImageType:
@@ -70,13 +73,11 @@ class MemeEngine:
             draw.multiline_text(
                 (x, y), text, font=font, fill="white", align="center", spacing=5, anchor="ma"
             )
-
-            output_path = os.path.join(
-                self.output_dir, f".temp_meme_{random.randint(1, 1000000)}.jpg"
-            )
+            file_name: str = f"temp_meme_{random.randint(1, 1000000)}.jpg"
+            output_path: Path = Path(self.output_dir) / file_name
             img.save(output_path)
-            return output_path
-    
+            return file_name
+
     
 if __name__ == "__main__":
     meme = MemeEngine("./src/.tmp")
