@@ -78,4 +78,4 @@ Omit any flag to let the tool pick a random fallback. The script prints the path
 
 ## License
 
-MIT © Shayman-M.
+[MIT © Shayman-M.](https://github.com/Shayman-M-86/Motivational-Meme-Generator?tab=MIT-1-ov-file)
