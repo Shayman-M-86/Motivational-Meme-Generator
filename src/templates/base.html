@@ -16,21 +16,43 @@
 
             .nav {
                 display: inline;
-                padding: 60px;
+                padding: 30px;
             }
 
             img {
                 border: 1px solid rgba(0,0,0,.125);
                 border-radius: .25rem;
                 }
+
+            .btn {
+                margin: 5px;
+                padding: 15px 30px;
+                border-radius: .25rem;
+                font-size: 2.2rem;
+            }
+            .container {
+                text-align: center;
+                flex-grow: 1;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+
+            h1 {
+                margin: 20px;
+            }
         </style>
     </head>
     <body>
+        <div class="container">
+            <h1>Motivational Meme Generator</h1>
         {% block body %}{% endblock %}
 
         <div class="nav">
             <a class="btn btn-primary" href="{{url_for('meme_rand')}}">Random</a>
             <a class="btn btn-outline-primary" href="{{url_for('meme_form')}}">Creator</a>    
+        </div>
         </div>
     </body>
 </html>
