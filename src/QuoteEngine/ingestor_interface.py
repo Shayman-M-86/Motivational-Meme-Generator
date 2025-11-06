@@ -1,10 +1,6 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from pathlib import Path
-import pandas as pd
-from docx import Document
-import subprocess
-import re
 
 from .quote_model import Quote
 
@@ -62,122 +58,6 @@ class IngestorInterface(ABC):
 
 
 
-# ---------- Ingestors for different file types
-
-
-class TxtIngestor(IngestorInterface):
-    """Ingestor for text files."""
-
-    extension: str = ".txt"
-
-    @classmethod
-    def ingest(cls, path: Path) -> list[Quote]:
-        """Ingest quotes from a text file."""
-        cls._extension_exception(path)
-
-        quotes: list[Quote] = []
-        try:
-            with open(path, "r", encoding="utf-8") as file:
-                for raw_line in file:
-                    quote = cls._parse_quote_line(raw_line)
-                    if quote:
-                        quotes.append(quote)
-        except Exception as e:
-            cls._exception_handler(e)
-
-        return quotes
-
-
-class CsvIngestor(IngestorInterface):
-    """Ingestor for CSV files."""
-
-    extension: str = ".csv"
-
-    @classmethod
-    def ingest(cls, path: Path) -> list[Quote]:
-        """Ingest quotes from a CSV file."""
-        cls._extension_exception(path)
-
-        quotes: list[Quote] = []
-        try:
-            df = pd.read_csv(path)
-            for _, row in df.iterrows():
-                body = row["body"]
-                author = row["author"]
-                quotes.append(Quote(body, author))
-        except Exception as e:
-            cls._exception_handler(e)
-
-        return quotes
-
-
-class DocxIngestor(IngestorInterface):
-    """Ingestor for DOCX files."""
-
-    extension: str = ".docx"
-
-    @classmethod
-    def ingest(cls, path: Path) -> list[Quote]:
-        """Ingest quotes from a DOCX file."""
-        cls._extension_exception(path)
-
-        quotes: list[Quote] = []
-        try:
-            doc = Document(str(path))
-            for para in doc.paragraphs:
-                quote = cls._parse_quote_line(para.text)
-                if quote:
-                    quotes.append(quote)
-        except Exception as e:
-            cls._exception_handler(e)
-
-        return quotes
-
-
-class PdfIngestor(IngestorInterface):
-    """Ingestor for PDF files."""
-
-    extension: str = ".pdf"
-
-    @classmethod
-    def ingest(cls, path: Path) -> list[Quote]:
-        """Ingest quotes from a PDF file."""
-        cls._extension_exception(path)
-
-        quotes: list[Quote] = []
-        try:
-            # Convert PDF to text using pdftotext command-line tool
-            result = subprocess.run(
-                ["pdftotext", str(path), "-"], capture_output=True, text=True
-            )
-            if result.returncode != 0:
-                raise IngestorException(
-                    cls.__name__,
-                    "Failed to convert PDF to text using pdftotext. Ensure pdftotext is installed and accessible.",
-                )
-
-            text_content: str = result.stdout.strip()
-            lines: list[str] = re.findall(r'"[^"]+" - [^"]+', text_content)
-
-            for raw_line in lines:
-                quote: Quote | None = cls._parse_quote_line(raw_line)
-                if quote:
-                    quotes.append(quote)
-
-        except Exception as e:
-            cls._exception_handler(e)
-
-        return quotes
-
 
 if __name__ == "__main__":
-    # Simple test cases to verify the functionality of IngestorInterface and TextIngestor
-    test_path = Path("./src/_data/DogQuotes/DogQuotesTXT.txt")
-
-    quotes: list[Quote] = TxtIngestor.ingest(test_path)
-    for quote in quotes:
-        print(quote)
-    # test_path.absolute()
-    # print(f"Testing file read for: {test_path.absolute()}")
-    # with open(test_path, "rb") as f:
-    #     print(f.read(900))
+    pass

@@ -1,3 +1,4 @@
+
 class Quote:
     """A class to represent a quote with its author."""
 
@@ -14,3 +15,8 @@ class Quote:
     def __str__(self):
         """Return a string representation of the quote."""
         return f'"{self.body}" - {self.author}'
+    
+    def __repr__(self):
+        """Return a formal string representation of the quote."""
+        return f'Quote(body="{self.body}", author="{self.author}")'
+        

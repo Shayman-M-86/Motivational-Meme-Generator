@@ -34,12 +34,12 @@ class MemeEngine:
         img_width: int,
         img_height: int,
     ) -> ImageFont.FreeTypeFont:
-        """Return a font sized so text fits within 80% width and 15% height of the image."""
-        target_width = img_width * 0.8
+        """Return a font sized so text fits within 60% width and 15% height of the image."""
+        target_width = img_width * 0.6
         max_height = img_height * 0.15
         spacing = 5
 
-        lo, hi = 20, max(33, img_width // 13)
+        lo, hi = 19, max(33, img_width // 13)
         best_font = ImageFont.truetype(font_path, size=lo)
         while lo <= hi:
             mid = (lo + hi) // 2
@@ -73,8 +73,13 @@ class MemeEngine:
             draw = ImageDraw.Draw(img)
 
             text = f"{quote}\n- {author}"
-            x = img.width / 2
-            y = img.height / 2
+            
+            width_margin = int(img.width * 0.4)
+            height_margin = int(img.height * 0.2)
+            
+            x = random.randint(width_margin, img.width - width_margin)
+            y = random.randint(height_margin, img.height - height_margin)
+            
             font = MemeEngine.text_scale(draw, text, "arial.ttf", img.width, img.height)
 
             draw.multiline_text(
@@ -106,8 +111,8 @@ if __name__ == "__main__":
     print(
         meme.make_meme(
             "./src/_data/photos/dog/xander_1.jpg",
-            "Tis",
-            "Author Name",
+            "Every snack you make, every meal you bake… \n I’ll be watching you",
+            "Watcher",
             500,
         )
     )
