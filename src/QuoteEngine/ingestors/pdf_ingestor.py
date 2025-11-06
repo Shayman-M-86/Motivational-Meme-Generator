@@ -8,15 +8,17 @@ import subprocess
 
 class PdfIngestor(IngestorInterface):
     """Ingestor for PDF files."""
-
+    
     extension: str = ".pdf"
-
+    
     @classmethod
     def ingest(cls, path: Path) -> list[Quote]:
         """Ingest quotes from a PDF file."""
+        
         cls._extension_exception(path)
-
+        
         quotes: list[Quote] = []
+        
         try:
             # Convert PDF to text using pdftotext command-line tool
             result = subprocess.run(
@@ -27,7 +29,6 @@ class PdfIngestor(IngestorInterface):
                     cls.__name__,
                     "Failed to convert PDF to text using pdftotext. Ensure pdftotext is installed and accessible.",
                 )
-
             text_content: str = result.stdout.strip()
             lines: list[str] = re.findall(r'"[^"]+" - [^"]+', text_content)
 
