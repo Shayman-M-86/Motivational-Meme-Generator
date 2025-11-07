@@ -96,6 +96,6 @@ if __name__ == "__main__":
             sys.exit(1)
 
 
-    # meme_gen = MemeGenerator()
-    # for _ in range(5):
-    #     print(meme_gen.generate_meme())
+    meme_gen = MemeGenerator()
+    for _ in range(5):
+        print(meme_gen.generate_meme())

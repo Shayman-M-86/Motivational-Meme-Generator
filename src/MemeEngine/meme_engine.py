@@ -30,7 +30,7 @@ class MemeEngine:
     def text_scale(
         draw: ImageDraw.ImageDraw,
         text: str,
-        font_path: str,
+        font_path: str | Path,
         img_width: int,
         img_height: int,
     ) -> ImageFont.FreeTypeFont:
@@ -68,6 +68,9 @@ class MemeEngine:
         Returns:
             str: Filename of the generated meme relative to the output directory.
         """
+
+        font_file = Path(__file__).resolve().parent.parent / "fonts" / "arial.ttf"
+
         with Image.open(img_path) as img:
             img = MemeEngine.scale_image(img, width)
             draw = ImageDraw.Draw(img)
@@ -80,7 +83,7 @@ class MemeEngine:
             x = random.randint(width_margin, img.width - width_margin)
             y = random.randint(height_margin, img.height - height_margin)
             
-            font = MemeEngine.text_scale(draw, text, "arial.ttf", img.width, img.height)
+            font = MemeEngine.text_scale(draw, text, font_file, img.width, img.height)
 
             draw.multiline_text(
                 (x + 2, y + 2),
