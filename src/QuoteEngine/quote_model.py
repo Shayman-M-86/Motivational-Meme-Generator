@@ -18,4 +18,4 @@ class Quote:
     
     def __repr__(self):
         """Return a formal string representation of the quote."""
-        return return f'"{self.body}" - {self.author}'
+        return f'"{self.body}" - {self.author}'
