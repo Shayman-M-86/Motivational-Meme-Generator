@@ -18,5 +18,4 @@ class Quote:
     
     def __repr__(self):
         """Return a formal string representation of the quote."""
-        return f'Quote(body="{self.body}", author="{self.author}")'
-        
+        return return f'"{self.body}" - {self.author}'
